@@ -1,0 +1,12 @@
+/*
+!.gitignore
+!README.md
+!codeigniter-migrate.png
+!application
+application/*
+!application/controllers
+application/controllers/*
+!application/controllers/Migrate.php
+!application/views
+application/views/*
+!application/views/migrate.php
