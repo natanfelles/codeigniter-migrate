@@ -2,8 +2,8 @@
 /**
  * CodeIgniter Migrate
  *
- * @author	Natan Felles <natanfelles@gmail.com>
- * @link	http://github.com/natanfelles/codeigniter-migrate
+ * @author  Natan Felles <natanfelles@gmail.com>
+ * @link    http://github.com/natanfelles/codeigniter-migrate
  */
 defined('BASEPATH') or exit('No direct script access allowed');
 
@@ -17,10 +17,10 @@ class Migrate extends CI_Controller
      */
     protected $migrations;
 
-	/**
+    /**
      * @var bool Migration Status
      */
-	protected $migration_enabled;
+    protected $migration_enabled;
 
     /**
      * Migrate constructor
@@ -29,13 +29,13 @@ class Migrate extends CI_Controller
     {
         parent::__construct();
         $this->config->load('migration');
-		$this->migration_enabled = $this->config->item('migration_enabled');
+        $this->migration_enabled = $this->config->item('migration_enabled');
         if ($this->migration_enabled) {
             $this->load->database();
             $this->load->library('migration');
             $this->migrations = $this->migration->find_migrations();
         }
-		$this->load->helper('url');
+        $this->load->helper('url');
     }
 
     /**
