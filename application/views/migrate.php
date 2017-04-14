@@ -24,7 +24,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
         body {
             padding-top: 20px;
         }
-        .full-width {
+        .btn-migrate {
             width: 100%;
         }
     </style>
@@ -60,9 +60,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <td><?= $migration['version'] ?></td>
                                 <td><?= $migration['file'] ?></td>
                                 <td>
-                                    <button data-version="<?= $migration['version'] ?>" class="btn btn-sm btn-primary btn-migrate full-width">
-                                        <i class="glyphicon glyphicon-refresh"></i> Migrate
-                                    </button>
+                                    <button data-version="<?= $migration['version'] ?>" class="btn btn-sm btn-primary btn-migrate">Migrate</button>
                                 </td>
                             </tr>
                         <?php endforeach ?>
@@ -74,57 +72,61 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <script src="<?= $assets['jquery'] ?>"></script>
     <script src="<?= $assets['bootstrap_js'] ?>"></script>
     <script>
-    $('.btn-migrate').click(function(){
-            var btn = $(this);
-            console.log(btn.data('version'));
-            var d = {
-                name: 'version',
-                value: btn.data('version')
-            };
-            $.when($.ajax("<?= site_url('migrate/token') ?>", {
-                cache: false,
-                error: function(){
-                    msg('#msg-migrate', 'danger', {content: 'CSRF Token could not be get.'});
-                }
-            })).done(function(t) {
-                console.log(t);
-                d = $.merge($.makeArray(d), $.makeArray(t));
-                console.log(d);
-                $.post("<?= site_url('migrate/post') ?>", d, function(r){
-                    console.log(r);
-                    msg('#msg-migrate', r.type, r);
-                    if (r.type == 'success'){
-                        btn.parent().parent().parent().children('tr').removeClass('success');
-                        btn.parent().parent().addClass('success');
-                    }
-                }, 'json').fail(function(){
-                    msg('#msg-migrate', 'danger', {content: 'Something is wrong.'});
-                });
-            });
-            return false;
-        });
+	    $(document).ready(function() {
+	        var btn_migrate = $('.btn-migrate');
+	        btn_migrate.prepend('<i class="glyphicon glyphicon-refresh"></i> ');
+	        btn_migrate.click(function(){
+	            var btn = $(this);
+	            console.log(btn.data('version'));
+	            var d = {
+	                name: 'version',
+	                value: btn.data('version')
+	            };
+	            $.when($.ajax("<?= site_url('migrate/token') ?>", {
+	                cache: false,
+	                error: function(){
+	                    msg('#msg-migrate', 'danger', {content: 'CSRF Token could not be get.'});
+	                }
+	            })).done(function(t) {
+	                console.log(t);
+	                d = $.merge($.makeArray(d), $.makeArray(t));
+	                console.log(d);
+	                $.post("<?= site_url('migrate/post') ?>", d, function(r){
+	                    console.log(r);
+	                    msg('#msg-migrate', r.type, r);
+	                    if (r.type == 'success'){
+	                        btn.parent().parent().parent().children('tr').removeClass('success');
+	                        btn.parent().parent().addClass('success');
+	                    }
+	                }, 'json').fail(function(){
+	                    msg('#msg-migrate', 'danger', {content: 'Something is wrong.'});
+	                });
+	            });
+	            return false;
+	        });
+	    });
 
-        function msg(parent, type, r) {
-            var h = '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-            if (r.header) {
-                h += '<strong>' + r.header + '</strong><br>';
-            }
-            // If Response Content is an Object we will list it
-            if (typeof r.content == 'object') {
-                var o = '<ul>';
-                $.each(r.content, function(k, v) {
-                    o += '<li>' + v + '</li>';
-                });
-                o += '</ul>';
-                h += o;
-            } else {
-                h += r.content;
-            }
-            $(parent).children('.msg')
-                .removeClass()
-                .addClass('msg alert alert-' + type)
-                .html(h);
-        }
+	    function msg(parent, type, r) {
+	        var h = '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+	        if (r.header) {
+	            h += '<strong>' + r.header + '</strong><br>';
+	        }
+	        // If Response Content is an Object we will list it
+	        if (typeof r.content == 'object') {
+	            var o = '<ul>';
+	            $.each(r.content, function(k, v) {
+	                o += '<li>' + v + '</li>';
+	            });
+	            o += '</ul>';
+	            h += o;
+	        } else {
+	            h += r.content;
+	        }
+	        $(parent).children('.msg')
+	            .removeClass()
+	            .addClass('msg alert alert-' + type)
+	            .html(h);
+	    }
     </script>
 </body>
 </html>
