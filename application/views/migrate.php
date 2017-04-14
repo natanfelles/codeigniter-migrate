@@ -77,7 +77,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	        btn_migrate.prepend('<i class="glyphicon glyphicon-refresh"></i> ');
 	        btn_migrate.click(function(){
 	            var btn = $(this);
-				btn.button('loading');
+				btn.attr('autocomplete', 'off').button('loading');
 	            console.log(btn.data('version'));
 	            var d = {
 	                name: 'version',
