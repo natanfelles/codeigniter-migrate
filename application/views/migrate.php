@@ -82,7 +82,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 value: btn.data('version')
             };
             $.when($.ajax("<?= site_url('migrate/token') ?>", {
-                cache: false
+                cache: false,
+                error: function(){
+                    msg('#msg-migrate', 'danger', {content: 'CSRF Token could not be get.'});
+                }
             })).done(function(t) {
                 console.log(t);
                 d = $.merge($.makeArray(d), $.makeArray(t));
@@ -90,8 +93,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 $.post("<?= site_url('migrate/post') ?>", d, function(r){
                     console.log(r);
                     msg('#msg-migrate', r.type, r);
-                    btn.parent().parent().parent().children('tr').removeClass('success');
-                    btn.parent().parent().addClass('success');
+                    if (r.type == 'success'){
+                        btn.parent().parent().parent().children('tr').removeClass('success');
+                        btn.parent().parent().addClass('success');
+                    }
                 }, 'json').fail(function(){
                     msg('#msg-migrate', 'danger', {content: 'Something is wrong.'});
                 });

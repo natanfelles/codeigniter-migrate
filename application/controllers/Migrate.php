@@ -72,8 +72,14 @@ class Migrate extends CI_Controller
     public function post()
     {
         if ($this->input->is_ajax_request() && $this->migration_enabled) {
-            $version = $this->input->post('version');
-            if ($version) {
+            $new_version = $this->input->post('version');
+            foreach ($this->migrations as $version => $filepath) {
+                if ($version == $new_version) {
+                    break;
+                }
+                unset($version);
+            }
+            if (isset($version)) {
                 // If you works with Foreign Keys look this helper:
                 // https://gist.github.com/natanfelles/4024b598f3b31db47c3e139d82dec281
                 // $this->load->helper('db');
@@ -86,7 +92,15 @@ class Migrate extends CI_Controller
                     $response['type'] = 'info';
                     $response['header'] = 'Info';
                     $response['content'] = 'Migration continues in the same version.';
+                } elseif ($v === false) {
+                    $response['type'] = 'danger';
+                    $response['header'] = 'Error!';
+                    $response['content'] = 'Migration failed.';
                 }
+            } else {
+                $response['type'] = 'warning';
+                $response['header'] = 'Warning!';
+                $response['content'] = 'The migration version <strong>' . htmlentities($new_version) . '</strong> does not exist.';
             }
             header('Content-Type: application/json');
             echo json_encode(isset($response) ? $response : '');
