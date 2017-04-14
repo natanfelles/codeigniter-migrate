@@ -28,14 +28,14 @@ class Migrate extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('url');
         $this->config->load('migration');
         $this->migration_enabled = $this->config->item('migration_enabled');
-        if ($this->migration_enabled) {
+        if ($this->migration_enabled && uri_string() != 'migrate/token') {
             $this->load->database();
             $this->load->library('migration');
             $this->migrations = $this->migration->find_migrations();
         }
-        $this->load->helper('url');
     }
 
     /**
