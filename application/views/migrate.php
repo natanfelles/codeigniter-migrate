@@ -7,7 +7,9 @@
  */
 defined('BASEPATH') or exit('No direct script access allowed');
 /**
- * @var CI_Controller $this
+ * @var array $assets               Assets links
+ * @var bool  $migration_disabled   Migration status
+ * @var array $migrations           Migration files
  */
 ?>
 <!DOCTYPE html>
@@ -17,7 +19,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Migrate</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $assets['bootstrap_css'] ?>">
     <style>
         body {
             padding-top: 20px;
@@ -69,31 +71,29 @@ defined('BASEPATH') or exit('No direct script access allowed');
             </table>
         <?php endif ?>
     </div>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="<?= $assets['jquery'] ?>"></script>
+    <script src="<?= $assets['bootstrap_js'] ?>"></script>
     <script>
-    $(".btn-migrate").click(function(){
+    $('.btn-migrate').click(function(){
             var btn = $(this);
-            console.log(btn.data("version"));
+            console.log(btn.data('version'));
             var d = {
-                name: "version",
-                value: btn.data("version")
+                name: 'version',
+                value: btn.data('version')
             };
             $.when($.ajax("<?= site_url('migrate/token') ?>", {
                 cache: false
             })).done(function(t) {
-                d = $.merge($.makeArray(d), $.makeArray({
-                    name: t.name,
-                    value: t.hash
-                }));
+                console.log(t);
+                d = $.merge($.makeArray(d), $.makeArray(t));
                 console.log(d);
                 $.post("<?= site_url('migrate/post') ?>", d, function(r){
                     console.log(r);
-                    msg("#msg-migrate",r.type,r);
-                    btn.parent().parent().parent().children("tr").removeClass("success");
-                    btn.parent().parent().addClass("success");
-                }, "json").fail(function(){
-                    msg("#msg-migrate","danger",{content: "Something is wrong."});
+                    msg('#msg-migrate', r.type, r);
+                    btn.parent().parent().parent().children('tr').removeClass('success');
+                    btn.parent().parent().addClass('success');
+                }, 'json').fail(function(){
+                    msg('#msg-migrate', 'danger', {content: 'Something is wrong.'});
                 });
             });
             return false;
@@ -109,7 +109,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 var o = '<ul>';
                 $.each(r.content, function(k, v) {
                     o += '<li>' + v + '</li>';
-                    $('#' + k).parent().addClass('has-error');
                 });
                 o += '</ul>';
                 h += o;
@@ -119,8 +118,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
             $(parent).children('.msg')
                 .removeClass()
                 .addClass('msg alert alert-' + type)
-                .html(h)
-                .show();
+                .html(h);
         }
     </script>
 </body>

@@ -44,8 +44,8 @@ class Migrate extends CI_Controller
     public function index()
     {
         if ($this->migration_enabled) {
-            foreach ($this->migrations as $version => $file) {
-                $fp = explode('/', $file);
+            foreach ($this->migrations as $version => $filepath) {
+                $fp = explode('/', $filepath);
                 $data['migrations'][] = [
                     'version' => $version,
                     'file' => $fp[count($fp) - 1],
@@ -56,6 +56,12 @@ class Migrate extends CI_Controller
         } else {
             $data['migration_disabled'] = true;
         }
+        // You can change the assets links to other versions or to be site relative
+        $data['assets'] = [
+            'bootstrap_css' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+            'bootstrap_js' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
+            'jquery' => 'https://code.jquery.com/jquery-2.2.4.min.js'
+        ];
 
         $this->load->view('migrate', $data);
     }
@@ -74,12 +80,12 @@ class Migrate extends CI_Controller
                 $v = $this->migration->version($version);
                 if (is_numeric($v)) {
                     $response['type'] = 'success';
-                    $response['header'] = "Sucess!";
-                    $response['content'] = "The current version is <strong>" . $v . "</strong> now.";
+                    $response['header'] = 'Sucess!';
+                    $response['content'] = "The current version is <strong>{$v}</strong> now.";
                 } elseif ($v === true) {
                     $response['type'] = 'info';
-                    $response['header'] = "Info";
-                    $response['content'] = "Migration continues in the same version.";
+                    $response['header'] = 'Info';
+                    $response['content'] = 'Migration continues in the same version.';
                 }
             }
             header('Content-Type: application/json');
@@ -95,7 +101,7 @@ class Migrate extends CI_Controller
         header('Content-Type: application/json');
         echo json_encode([
             'name' => $this->security->get_csrf_token_name(),
-            'hash' => $this->security->get_csrf_hash()
+            'value' => $this->security->get_csrf_hash()
         ]);
     }
 }
