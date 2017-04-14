@@ -60,7 +60,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <td><?= $migration['version'] ?></td>
                                 <td><?= $migration['file'] ?></td>
                                 <td>
-                                    <button data-version="<?= $migration['version'] ?>" class="btn btn-sm btn-primary btn-migrate">Migrate</button>
+                                    <button data-version="<?= $migration['version'] ?>" class="btn btn-sm btn-primary btn-migrate" autocomplete="off">Migrate</button>
                                 </td>
                             </tr>
                         <?php endforeach ?>
@@ -77,7 +77,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	        btn_migrate.prepend('<i class="glyphicon glyphicon-refresh"></i> ');
 	        btn_migrate.click(function(){
 	            var btn = $(this);
-				btn.attr('autocomplete', 'off').button('loading');
+				btn.button('loading');
 	            console.log(btn.data('version'));
 	            var d = {
 	                name: 'version',
