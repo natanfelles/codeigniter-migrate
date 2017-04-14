@@ -77,6 +77,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	        btn_migrate.prepend('<i class="glyphicon glyphicon-refresh"></i> ');
 	        btn_migrate.click(function(){
 	            var btn = $(this);
+				btn.button('loading');
 	            console.log(btn.data('version'));
 	            var d = {
 	                name: 'version',
@@ -98,6 +99,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	                        btn.parent().parent().parent().children('tr').removeClass('success');
 	                        btn.parent().parent().addClass('success');
 	                    }
+						btn.button('reset');
 	                }, 'json').fail(function(){
 	                    msg('#msg-migrate', 'danger', {content: 'Something is wrong.'});
 	                });
