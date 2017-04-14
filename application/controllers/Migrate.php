@@ -45,7 +45,7 @@ class Migrate extends CI_Controller
     {
         if ($this->migration_enabled) {
             foreach ($this->migrations as $version => $filepath) {
-                $fp = explode('/', $filepath);
+                $fp = explode(DIRECTORY_SEPARATOR, $filepath);
                 $data['migrations'][] = [
                     'version' => $version,
                     'file' => $fp[count($fp) - 1],
