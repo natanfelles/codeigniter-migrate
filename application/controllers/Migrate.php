@@ -10,8 +10,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Class Migrate
  */
-class Migrate extends CI_Controller
-{
+class Migrate extends CI_Controller {
     /**
      * @var array Migrations
      */
@@ -31,7 +30,8 @@ class Migrate extends CI_Controller
         $this->load->helper('url');
         $this->config->load('migration');
         $this->migration_enabled = $this->config->item('migration_enabled');
-        if ($this->migration_enabled && uri_string() != 'migrate/token') {
+        if ($this->migration_enabled && uri_string() != 'migrate/token')
+        {
             $this->load->database();
             $this->load->library('migration');
             $this->migrations = $this->migration->find_migrations();
@@ -43,8 +43,10 @@ class Migrate extends CI_Controller
      */
     public function index()
     {
-        if ($this->migration_enabled) {
-            foreach ($this->migrations as $version => $filepath) {
+        if ($this->migration_enabled)
+        {
+            foreach ($this->migrations as $version => $filepath)
+            {
                 $fp = explode(DIRECTORY_SEPARATOR, $filepath);
                 $data['migrations'][] = [
                     'version' => $version,
@@ -53,8 +55,10 @@ class Migrate extends CI_Controller
             }
             $migration_db = $this->db->get($this->config->item('migration_table'))->row_array(1);
             $data['current_version'] = $migration_db['version'];
-        } else {
-            $data['migration_disabled'] = true;
+        }
+        else
+        {
+            $data['migration_disabled'] = TRUE;
         }
         // You can change the assets links to other versions or to be site relative
         $data['assets'] = [
@@ -71,27 +75,36 @@ class Migrate extends CI_Controller
      */
     public function post()
     {
-        if ($this->input->is_ajax_request() && $this->migration_enabled) {
+        if ($this->input->is_ajax_request() && $this->migration_enabled)
+        {
             $version = $this->input->post('version');
-            if (array_key_exists($version, $this->migrations)) {
+            if (array_key_exists($version, $this->migrations))
+            {
                 // If you works with Foreign Keys look this helper:
                 // https://gist.github.com/natanfelles/4024b598f3b31db47c3e139d82dec281
                 // $this->load->helper('db');
                 $v = $this->migration->version($version);
-                if (is_numeric($v)) {
+                if (is_numeric($v))
+                {
                     $response['type'] = 'success';
                     $response['header'] = 'Sucess!';
                     $response['content'] = "The current version is <strong>{$v}</strong> now.";
-                } elseif ($v === true) {
+                }
+                elseif ($v === TRUE)
+                {
                     $response['type'] = 'info';
                     $response['header'] = 'Info';
                     $response['content'] = 'Migration continues in the same version.';
-                } elseif ($v === false) {
+                }
+                elseif ($v === FALSE)
+                {
                     $response['type'] = 'danger';
                     $response['header'] = 'Error!';
                     $response['content'] = 'Migration failed.';
                 }
-            } else {
+            }
+            else
+            {
                 $response['type'] = 'warning';
                 $response['header'] = 'Warning!';
                 $response['content'] = 'The migration version <strong>' . htmlentities($version) . '</strong> does not exists.';
