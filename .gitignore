@@ -10,3 +10,4 @@ application/controllers/*
 !application/views
 application/views/*
 !application/views/migrate.php
+!assets/

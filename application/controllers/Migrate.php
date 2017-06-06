@@ -66,17 +66,17 @@ class Migrate extends CI_Controller {
 			$data['migration_disabled'] = TRUE;
 		}
 		// You can change the assets links to other versions or to be site relative
-		$data['assets'] = [
+		/*$data['assets'] = [
 			'bootstrap_css' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
 			'bootstrap_js'  => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
 			'jquery'        => 'https://code.jquery.com/jquery-2.2.4.min.js',
-		];
+		];*/
 
-		/*$data['assets'] = [
+		$data['assets'] = [
 			'bootstrap_css' => base_url('assets/css/bootstrap.min.css'),
 			'bootstrap_js'  => base_url('assets/js/bootstrap.min.js'),
 			'jquery'        => base_url('assets/js/jquery-2.2.4.min.js'),
-		];*/
+		];
 
 		$this->load->view('migrate', $data);
 	}
