@@ -7,6 +7,9 @@ application/*
 !application/controllers
 application/controllers/*
 !application/controllers/Migrate.php
+!application/helpers
+application/helpers/*
+!application/helpers/db_helper.php
 !application/views
 application/views/*
 !application/views/migrate.php

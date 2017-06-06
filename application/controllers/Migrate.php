@@ -91,7 +91,7 @@ class Migrate extends CI_Controller {
 		{
 			// If you works with Foreign Keys look this helper:
 			// https://gist.github.com/natanfelles/4024b598f3b31db47c3e139d82dec281
-			// $this->load->helper('db');
+			$this->load->helper('db');
 			$version = $this->input->post('version');
 			if ($version == 0)
 			{
