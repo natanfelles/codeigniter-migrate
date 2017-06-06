@@ -40,8 +40,29 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	<?php if (isset($migration_disabled)) : ?>
         <div class="alert alert-info">Migration is disabled.</div>
 	<?php else : ?>
-        <div id="msg-migrate">
-            <div class="msg"></div>
+        <div class="row">
+            <div class="col-md-9">
+                <div id="msg-migrate">
+                    <div class="msg">
+                        <div class="alert alert-info">
+                            <strong>Info</strong><br> The current migration version is
+                            <strong><?= $current_version ?></strong>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="well">
+                    <div class="btn-group btn-group-justified" role="group">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-danger btn-migrate" data-version="0"
+                                    autocomplete="off">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <table class="table table-striped table-hover table-bordered">
             <thead>
@@ -52,7 +73,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 <th class="text-center">Action</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="migrations">
 			<?php if (empty($migrations)) : ?>
                 <tr>
                     <td colspan="4">No migrations.</td>
@@ -103,7 +124,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     console.log(r);
                     msg('#msg-migrate', r.type, r);
                     if (r.type === 'success') {
-                        btn.parent().parent().parent().children('tr').removeClass('success');
+                        $('#migrations').children('tr').removeClass('success');
                         btn.parent().parent().addClass('success');
                     }
                     btn.button('reset');
@@ -116,7 +137,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     });
 
     function msg(parent, type, r) {
-        var h = '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+        var h = '';
         if (r.header) {
             h += '<strong>' + r.header + '</strong><br>';
         }
@@ -134,7 +155,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
         $(parent).children('.msg')
             .removeClass()
             .addClass('msg alert alert-' + type)
-            .html(h);
+            .html(h + '<span class="pull-right">' + new Date().toLocaleTimeString() +'</span>');
     }
 </script>
 </body>

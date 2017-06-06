@@ -72,6 +72,12 @@ class Migrate extends CI_Controller {
 			'jquery'        => 'https://code.jquery.com/jquery-2.2.4.min.js',
 		];
 
+		/*$data['assets'] = [
+			'bootstrap_css' => base_url('assets/css/bootstrap.min.css'),
+			'bootstrap_js'  => base_url('assets/js/bootstrap.min.js'),
+			'jquery'        => base_url('assets/js/jquery-2.2.4.min.js'),
+		];*/
+
 		$this->load->view('migrate', $data);
 	}
 
@@ -83,12 +89,21 @@ class Migrate extends CI_Controller {
 	{
 		if ($this->input->is_ajax_request() && $this->migration_enabled)
 		{
+			// If you works with Foreign Keys look this helper:
+			// https://gist.github.com/natanfelles/4024b598f3b31db47c3e139d82dec281
+			// $this->load->helper('db');
 			$version = $this->input->post('version');
-			if (array_key_exists($version, $this->migrations))
+			if ($version == 0)
 			{
-				// If you works with Foreign Keys look this helper:
-				// https://gist.github.com/natanfelles/4024b598f3b31db47c3e139d82dec281
-				// $this->load->helper('db');
+				$this->migration->version(0);
+				$response = [
+					'type'    => 'success',
+					'header'  => 'Sucess!',
+					'content' => "Migrations has ben reseted.",
+				];
+			}
+			elseif (array_key_exists($version, $this->migrations))
+			{
 				$v = $this->migration->version($version);
 				if (is_numeric($v))
 				{
