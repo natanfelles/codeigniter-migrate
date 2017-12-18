@@ -35,7 +35,7 @@ class Migrate extends CI_Controller {
 		$this->migration_enabled = $this->config->item('migration_enabled');
 		if ($this->migration_enabled && uri_string() != 'migrate/token')
 		{
-			$this->load->database();
+			$this->load->database($this->input->get('dbgroup') ? : '');
 			$this->load->library('migration');
 			$this->migrations = $this->migration->find_migrations();
 		}
@@ -77,6 +77,11 @@ class Migrate extends CI_Controller {
 			'bootstrap_js'  => base_url('assets/js/bootstrap.min.js'),
 			'jquery'        => base_url('assets/js/jquery-2.2.4.min.js'),
 		];
+
+		$dbconfig = $this->get_dbconfig();
+
+		$data['dbgroups']      = $dbconfig['dbgroups'];
+		$data['active_group']  = $this->input->get('dbgroup') ? : $dbconfig['active_group'];
 
 		$this->load->view('migrate', $data);
 	}
@@ -154,5 +159,27 @@ class Migrate extends CI_Controller {
 			'name'  => $this->security->get_csrf_token_name(),
 			'value' => $this->security->get_csrf_hash(),
 		]);
+	}
+
+	/**
+	 * Get Database Config file info
+	 *
+	 * @return array
+	 */
+	protected function get_dbconfig()
+	{
+		// Is the config file in the environment folder?
+		if ( ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php')
+			&& ! file_exists($file_path = APPPATH.'config/database.php'))
+		{
+			show_error('The configuration file database.php does not exist.');
+		}
+
+		include($file_path);
+
+		return [
+			'dbgroups'      => array_keys($db),
+			'active_group'  => $active_group,
+		];
 	}
 }

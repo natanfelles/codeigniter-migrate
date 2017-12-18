@@ -25,10 +25,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
         body {
             padding-top: 20px;
         }
-
-        .btn-migrate {
-            width: 100%;
-        }
     </style>
 </head>
 <body>
@@ -41,7 +37,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <div class="alert alert-info">Migration is disabled.</div>
 	<?php else : ?>
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-7">
                 <div id="msg-migrate">
                     <div class="msg">
                         <div class="alert alert-info">
@@ -51,16 +47,29 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <div class="well">
-                    <div class="btn-group btn-group-justified" role="group">
-                        <div class="btn-group" role="group">
-                            <button class="btn btn-danger btn-migrate" data-version="0"
-                                    autocomplete="off">
-                                Reset
-                            </button>
+                        <div class="btn-group btn-group-justified" role="group">
+                        	<div class="btn-group" role="group">
+							    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							    	DB Group (<strong><?= $active_group ?></strong>)
+							    	<span class="caret"></span>
+							    </button>
+							    <ul class="dropdown-menu" id="dbgroups">
+							    	<?php foreach($dbgroups as $dbgroup): ?>
+							    		<li<?= $dbgroup === $active_group ? ' class="active"' : '' ?>>
+							    			<a href="<?= site_url('migrate/?dbgroup=' . $dbgroup) ?>"><?= $dbgroup ?></a>
+							    		</li>
+							    	<?php endforeach ?>
+							    </ul>
+							</div>
+							<div class="btn-group" role="group">
+	                            <button class="btn btn-danger btn-migrate" data-version="0"
+	                                    autocomplete="off">
+	                                Reset
+	                            </button>
+	                        </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -86,7 +95,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <td><?= $migration['file'] ?></td>
                         <td>
                             <button data-version="<?= $migration['version'] ?>"
-                                    class="btn btn-sm btn-primary btn-migrate" autocomplete="off">
+                                    class="btn btn-sm btn-primary btn-migrate btn-block" autocomplete="off">
                                 Migrate
                             </button>
                         </td>
@@ -120,7 +129,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 console.log(t);
                 d = $.merge($.makeArray(d), $.makeArray(t));
                 console.log(d);
-                $.post("<?= site_url('migrate/post') ?>", d, function (r) {
+                $.post("<?= site_url('migrate/post?dbgroup=' . $active_group) ?>", d, function (r) {
                     console.log(r);
                     msg('#msg-migrate', r.type, r);
                     if (r.type === 'success') {
